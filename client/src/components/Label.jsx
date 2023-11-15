@@ -40,10 +40,9 @@ function Label(){
 
       const handleGetMusiques = async () => {
         try {
-            const musiquesArtiste = await state.contract.methods.getMusiquesArtiste(address).send({ from: state.accounts[0] });
+            const musiquesArtiste = await state.contract.methods.getMusiquesArtiste(address).call({ from: state.accounts[0] });
             console.log('musiquesArtiste', musiquesArtiste);
-            console.log('musiques ././././', musiquesArtiste.events.getMusiques.returnValues._musiques);
-            setMusiques(musiquesArtiste.events.getMusiques.returnValues._musiques);
+            setMusiques(musiquesArtiste);
             
         } catch (error) {
             console.error('Erreur lors de la récupération des musiques de l\'artiste :', error);
@@ -60,10 +59,10 @@ function Label(){
 
     const handleGetArtistes = async () => {
       try {
-        console.log(state)
-        const response =  await state.contract.methods.getMusiquesLabel().send({ from: state.accounts[0] });
-        console.log('response', response);
-        setArtistes(response.events.getMusiques.returnValues._musiciens);
+        console.log('state: ', state)
+        console.log('state.contract.methods: ', state.contract.methods)
+        const response =  await state.contract.methods.getArtistesLabel().call({ from: state.accounts[0] });
+        setArtistes(response);
       } catch (error) {
         console.error('Erreur lors de la récupération des artistes du Label :', error);
       }
@@ -156,15 +155,15 @@ function Label(){
                 <div>
                     {artistes.map((artiste, index) => (
                         <div key={index}>
-                            <p>Adresse de l'Artiste: {artiste._address}, Nom d'Arstiste: {artiste._nom}, Age: {artiste._age}</p>
+                            <p>Adresse de l'Artiste: {artiste._adress}, Nom d'Arstiste: {artiste._nom}, Age: {artiste. age} ans</p>
+                            {artiste._musiques.length > 0 &&
+                                <p>Musique(s) de  {artiste._nom} : \n {artiste._musiques._titre}, d'une durée de {artiste._musiques._duree} secondes, genre {artiste._musiques._genre}</p> 
+                            }                            
                         </div>
                     ))}
                 </div>
           </div>
-        </div>
-        
-        
-        
+        </div>     
       );
 }
 

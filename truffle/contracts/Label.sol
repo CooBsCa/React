@@ -49,17 +49,15 @@ contract Label {
 
         Musiciens[_addressMusicien]._nom = _nomMusicien;
         Musiciens[_addressMusicien].age = _age;
-        Musiciens[_addressMusicien]._musiques.push();
         emit creationMusicien(_nomMusicien, _age);
 
-        Musique[] memory _musique = new Musique[](0);
-        Musicien memory newMusicien = Musicien(
-            _addressMusicien,
-            _nomMusicien,
-            _age,
-            _musique
-        );
-        _musiciens.push(newMusicien);
+        uint256 index = _musiciens.length;
+        _musiciens.push();
+        Musicien storage newMusicien = _musiciens[index];
+        newMusicien._nom = _nomMusicien;
+        newMusicien.age = _age;
+        newMusicien._adress = _addressMusicien;
+        newMusicien._musiques.push();
     }
 
     // Ajouter une musique a un musicien du label
@@ -84,14 +82,16 @@ contract Label {
 
         for (uint i = 0; i < _musiciens.length; i++) {
             if (_musiciens[i]._adress == _addressMusicien) {
-                //_musiciens[i]._musiques.push(newMusique);
+                _musiciens[i]._musiques.push(newMusique);
             }
         }
     }
 
     // Récupère toutes les musiques d'un artiste par son adresse
-    function getMusiquesArtiste(address _addressMusicien) external {
-        emit getMusiques(Musiciens[_addressMusicien]._musiques);
+    function getMusiquesArtiste(
+        address _addressMusicien
+    ) public view returns (Musique[] memory) {
+        return Musiciens[_addressMusicien]._musiques;
     }
 
     // Delete un artiste du Label via son adresse
@@ -99,7 +99,8 @@ contract Label {
         delete Musiciens[_addressMusicien];
     }
 
-    function getMusiquesLabel() public view returns (Musicien[] memory) {
+    // Récupération de tous les artistes du label
+    function getArtistesLabel() public view returns (Musicien[] memory) {
         return _musiciens;
     }
 }
